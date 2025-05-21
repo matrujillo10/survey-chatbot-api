@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "b5e3d8a1-4f2c-4e3b-9d2a-8f8b9c7d6e5f",
+		"name": "Connectly Survey API",
+		"description": "API collection for testing the Connectly Survey system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Health check returns ok\", function () {",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.status).to.eql(\"ok\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/health",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "health"]
+				},
+				"description": "Basic health check endpoint"
+			}
+		},
+		{
+			"name": "Surveys",
+			"item": [
+				{
+					"name": "Create Customer Feedback Survey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Survey created successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.title).to.eql(\"Customer Feedback Survey\");",
+									"    pm.expect(response.first_question_id).to.eql(\"satisfaction\");",
+									"    pm.globals.set(\"survey_id\", response._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Customer Feedback Survey\",\n    \"description\": \"Help us improve our service by providing your feedback\",\n    \"first_question_id\": \"satisfaction\",\n    \"questions\": {\n        \"satisfaction\": {\n            \"id\": \"satisfaction\",\n            \"text\": \"How satisfied are you with our service?\",\n            \"type\": \"rating\",\n            \"options\": [\n                {\"id\": \"1\", \"text\": \"Very Dissatisfied\", \"next_question_id\": \"recommend\"},\n                {\"id\": \"2\", \"text\": \"Dissatisfied\", \"next_question_id\": \"recommend\"},\n                {\"id\": \"3\", \"text\": \"Neutral\", \"next_question_id\": \"recommend\"},\n                {\"id\": \"4\", \"text\": \"Satisfied\", \"next_question_id\": \"recommend\"},\n                {\"id\": \"5\", \"text\": \"Very Satisfied\", \"next_question_id\": \"recommend\"}\n            ],\n            \"is_terminal\": false\n        },\n        \"recommend\": {\n            \"id\": \"recommend\",\n            \"text\": \"How likely are you to recommend our service to others?\",\n            \"type\": \"rating\",\n            \"options\": [\n                {\"id\": \"1\", \"text\": \"Very Unlikely\", \"next_question_id\": \"features\"},\n                {\"id\": \"2\", \"text\": \"Unlikely\", \"next_question_id\": \"features\"},\n                {\"id\": \"3\", \"text\": \"Neutral\", \"next_question_id\": \"features\"},\n                {\"id\": \"4\", \"text\": \"Likely\", \"next_question_id\": \"features\"},\n                {\"id\": \"5\", \"text\": \"Very Likely\", \"next_question_id\": \"features\"}\n            ],\n            \"is_terminal\": false\n        },\n        \"features\": {\n            \"id\": \"features\",\n            \"text\": \"Which features do you use most frequently?\",\n            \"type\": \"multiple_choice\",\n            \"options\": [\n                {\"id\": \"chat\", \"text\": \"Chat\", \"next_question_id\": \"improvement\"},\n                {\"id\": \"surveys\", \"text\": \"Surveys\", \"next_question_id\": \"improvement\"},\n                {\"id\": \"analytics\", \"text\": \"Analytics\", \"next_question_id\": \"improvement\"},\n                {\"id\": \"automation\", \"text\": \"Automation\", \"next_question_id\": \"improvement\"},\n                {\"id\": \"integration\", \"text\": \"Integration\", \"next_question_id\": \"improvement\"}\n            ],\n            \"is_terminal\": false\n        },\n        \"improvement\": {\n            \"id\": \"improvement\",\n            \"text\": \"What could we improve?\",\n            \"type\": \"text\",\n            \"default_next_question_id\": \"contact\",\n            \"is_terminal\": false\n        },\n        \"contact\": {\n            \"id\": \"contact\",\n            \"text\": \"Would you be interested in being contacted for a detailed feedback session?\",\n            \"type\": \"boolean\",\n            \"options\": [\n                {\"id\": \"yes\", \"text\": \"Yes\", \"next_question_id\": \"email\"},\n                {\"id\": \"no\", \"text\": \"No\"}\n            ],\n            \"is_terminal\": false\n        },\n        \"email\": {\n            \"id\": \"email\",\n            \"text\": \"Please provide your email for contact (optional)\",\n            \"type\": \"text\",\n            \"is_terminal\": true\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/surveys",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "surveys"]
+						},
+						"description": "Creates a comprehensive customer feedback survey"
+					}
+				},
+				{
+					"name": "Get Survey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Survey details are correct\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response._id).to.eql(pm.globals.get(\"survey_id\"));",
+									"    pm.expect(response.title).to.be.a('string');",
+									"    pm.expect(response.questions).to.be.an('object');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/surveys/{{survey_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "surveys", "{{survey_id}}"]
+						},
+						"description": "Get a specific survey by ID"
+					}
+				},
+				{
+					"name": "List Active Surveys",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is array\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/surveys",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "surveys"]
+						},
+						"description": "List all active surveys"
+					}
+				},
+				{
+					"name": "Update Survey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Survey updated successfully\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response._id).to.eql(pm.globals.get(\"survey_id\"));",
+									"    pm.expect(response.title).to.eql(\"Updated Customer Feedback Survey\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Customer Feedback Survey\",\n    \"description\": \"Updated survey description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/surveys/{{survey_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "surveys", "{{survey_id}}"]
+						},
+						"description": "Update an existing survey"
+					}
+				},
+				{
+					"name": "Delete Survey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/surveys/{{survey_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "surveys", "{{survey_id}}"]
+						},
+						"description": "Delete a survey"
+					}
+				}
+			]
+		},
+		{
+			"name": "Chat Response",
+			"item": [
+				{
+					"name": "WebSocket Connection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "ws://{{base_url}}/api/v1/respond/survey/{{survey_id}}/user/{{$guid}}",
+							"protocol": "ws",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "respond", "survey", "{{survey_id}}", "user", "{{$guid}}"]
+						},
+						"description": "WebSocket endpoint for chat-based survey responses"
+					}
+				}
+			]
+		}
+	]
+} 

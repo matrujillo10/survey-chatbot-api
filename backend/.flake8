@@ -1,0 +1,53 @@
+[flake8]
+max-line-length = 100
+exclude = 
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.pyc,
+    .pytest_cache,
+    .coverage
+
+# Complexity
+max-complexity = 10
+
+# Import order
+import-order-style = google
+application-import-names = app
+
+# Quotes
+inline-quotes = double
+multiline-quotes = double
+docstring-quotes = double
+avoid-escape = False
+
+# Documentation
+docstring-convention = google
+
+# Ignore certain errors
+ignore = 
+    # D100: Missing docstring in public module
+    D100,
+    # D104: Missing docstring in public package
+    D104,
+    # W503: Line break before binary operator (black formats this way)
+    W503,
+    # E203: Whitespace before ':' (black formats this way)
+    E203,
+    D107,
+    I100,
+    I101,
+    D101,
+    D415,
+    D212
+
+# Select specific error categories
+select = 
+    E,  # pycodestyle errors
+    W,  # pycodestyle warnings
+    F,  # pyflakes
+    I,  # import order
+    D,  # docstrings
+    Q,  # quotes
+    C90  # mccabe 
