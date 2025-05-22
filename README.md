@@ -1,5 +1,9 @@
 # Survey chatbot API
 
+## Demo
+
+[![image](https://github.com/user-attachments/assets/f0931c9e-ef4b-4b6f-8a89-239ccdb8bd76)](https://youtu.be/iXT2W1KOyTg?si=xWR8lWFveVIr2Up0)
+
 ## How to run the project?
 
 First, install the dependencies:
