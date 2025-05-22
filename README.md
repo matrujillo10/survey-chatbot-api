@@ -75,6 +75,8 @@ The flow of the survey response is as follows:
 5. The chatbot sends the next question to the client
 6. If there are no more questions, the chatbot sends a goodbye message and the session is closed
 
+![Survey response flow](./images/chat-sequence.png)
+
 ## API Documentation
 
 For the exposed endpoints, Swagger is used to document the API. The documentation can be accessed at `http://localhost:8000/docs`.
